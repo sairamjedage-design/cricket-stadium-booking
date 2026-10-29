@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  phone        String    @default("")
+  passwordHash String
+  photoDataUrl String?   @db.Text
+  role         String    @default("user")
+  createdAt    DateTime  @default(now())
+  bookings     Booking[]
+}
+
+model Match {
+  id               String         @id
+  teamA            String
+  teamB            String
+  tournament       String
+  format           String
+  matchDate        DateTime
+  localTime        String
+  timeZone         String
+  venue            String
+  city             String
+  country          String
+  stadiumName      String
+  minTicketPrice   Int
+  maxTicketPrice   Int
+  availableTickets Int
+  status           String         @default("UPCOMING")
+  createdAt        DateTime       @default(now())
+  bookings         Booking[]
+  ticketClaims     TicketClaim[]
+}
+
+model Booking {
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchId          String
+  match            Match          @relation(fields: [matchId], references: [id], onDelete: Restrict)
+  bookingReference String         @unique
+  totalAmount      Int
+  status           String         @default("CONFIRMED")
+  createdAt        DateTime       @default(now())
+  cancelledAt      DateTime?
+  seats            BookingSeat[]
+  ticketClaims     TicketClaim[]
+
+  @@index([userId, createdAt])
+}
+
+model BookingSeat {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  seatId      String
+  seatLabel   String
+  sectionId   String
+  sectionName String
+  price       Int
+  createdAt   DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+model TicketClaim {
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  seatId    String
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+
+  @@id([matchId, seatId])
+  @@index([bookingId])
+}

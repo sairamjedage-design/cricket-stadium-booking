@@ -1,0 +1,108 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
+const fixtures = [
+    {
+        id: '1', teamA: 'India', teamB: 'Australia', tournament: 'Champions Trophy · Group A',
+        format: 'ODI', matchDate: '2026-10-25T00:00:00+05:30', localTime: '2:30 PM', timeZone: 'IST',
+        venue: 'Narendra Modi Stadium', city: 'Ahmedabad', country: 'India',
+        minTicketPrice: 500, maxTicketPrice: 4200, availableTickets: 18450,
+    },
+    {
+        id: '2', teamA: 'India', teamB: 'England', tournament: 'International T20 Series · Match 1',
+        format: 'T20', matchDate: '2026-11-02T00:00:00+00:00', localTime: '7:00 PM', timeZone: 'GMT',
+        venue: "Lord's Cricket Ground", city: 'London', country: 'England',
+        minTicketPrice: 1800, maxTicketPrice: 7800, availableTickets: 9230,
+    },
+    {
+        id: '3', teamA: 'India', teamB: 'South Africa', tournament: 'Champions Trophy · Semi-final',
+        format: 'ODI', matchDate: '2026-11-15T00:00:00+05:30', localTime: '2:30 PM', timeZone: 'IST',
+        venue: 'Eden Gardens', city: 'Kolkata', country: 'India',
+        minTicketPrice: 700, maxTicketPrice: 5200, availableTickets: 12560,
+    },
+    {
+        id: '4', teamA: 'Pakistan', teamB: 'New Zealand', tournament: 'Pakistan Home Series · Match 2',
+        format: 'T20', matchDate: '2026-12-01T00:00:00+05:00', localTime: '7:00 PM', timeZone: 'PKT',
+        venue: 'Gaddafi Stadium', city: 'Lahore', country: 'Pakistan',
+        minTicketPrice: 400, maxTicketPrice: 3600, availableTickets: 14620,
+    },
+    {
+        id: '5', teamA: 'Bangladesh', teamB: 'Sri Lanka', tournament: 'Asian Test Championship · 1st Test',
+        format: 'Test', matchDate: '2026-12-08T00:00:00+06:00', localTime: '9:30 AM', timeZone: 'BST',
+        venue: 'Zahur Ahmed Chowdhury Stadium', city: 'Chattogram', country: 'Bangladesh',
+        minTicketPrice: 250, maxTicketPrice: 1900, availableTickets: 19750,
+    },
+    {
+        id: '6', teamA: 'Australia', teamB: 'England', tournament: 'Ashes · 3rd ODI',
+        format: 'ODI', matchDate: '2026-12-14T00:00:00+11:00', localTime: '1:00 PM', timeZone: 'AEDT',
+        venue: 'Sydney Cricket Ground', city: 'Sydney', country: 'Australia',
+        minTicketPrice: 2200, maxTicketPrice: 9400, availableTickets: 10380,
+    },
+    {
+        id: '7', teamA: 'India', teamB: 'Sri Lanka', tournament: 'International T20 Series · Match 3',
+        format: 'T20', matchDate: '2026-12-20T00:00:00+05:30', localTime: '7:00 PM', timeZone: 'IST',
+        venue: 'Wankhede Stadium', city: 'Mumbai', country: 'India',
+        minTicketPrice: 900, maxTicketPrice: 6500, availableTickets: 8760,
+    },
+    {
+        id: '8', teamA: 'South Africa', teamB: 'New Zealand', tournament: 'World Test Championship · 2nd Test',
+        format: 'Test', matchDate: '2027-01-08T00:00:00+02:00', localTime: '10:00 AM', timeZone: 'SAST',
+        venue: 'Newlands Cricket Ground', city: 'Cape Town', country: 'South Africa',
+        minTicketPrice: 650, maxTicketPrice: 4800, availableTickets: 14200,
+    },
+    {
+        id: '9', teamA: 'India', teamB: 'West Indies', tournament: 'India vs West Indies T20 Series · Match 1',
+        format: 'T20', matchDate: '2026-10-30T12:00:00Z', localTime: '7:00 PM', timeZone: 'IST',
+        venue: 'Rajiv Gandhi International Cricket Stadium', city: 'Hyderabad', country: 'India',
+        minTicketPrice: 700, maxTicketPrice: 5200, availableTickets: 14200,
+    },
+    {
+        id: '10', teamA: 'India', teamB: 'West Indies', tournament: 'India vs West Indies T20 Series · Match 2',
+        format: 'T20', matchDate: '2026-11-01T12:00:00Z', localTime: '7:00 PM', timeZone: 'IST',
+        venue: 'Greenfield International Stadium', city: 'Thiruvananthapuram', country: 'India',
+        minTicketPrice: 600, maxTicketPrice: 4800, availableTickets: 11800,
+    },
+    {
+        id: '11', teamA: 'India', teamB: 'West Indies', tournament: 'India vs West Indies T20 Series · Match 3',
+        format: 'T20', matchDate: '2026-11-04T12:00:00Z', localTime: '7:00 PM', timeZone: 'IST',
+        venue: 'M. Chinnaswamy Stadium', city: 'Bengaluru', country: 'India',
+        minTicketPrice: 800, maxTicketPrice: 6000, availableTickets: 10600,
+    },
+    {
+        id: '12', teamA: 'India', teamB: 'West Indies', tournament: 'India vs West Indies T20 Series · Match 4',
+        format: 'T20', matchDate: '2026-11-06T12:00:00Z', localTime: '7:00 PM', timeZone: 'IST',
+        venue: 'Barsapara Cricket Stadium', city: 'Guwahati', country: 'India',
+        minTicketPrice: 500, maxTicketPrice: 4000, availableTickets: 9800,
+    },
+    {
+        id: '13', teamA: 'India', teamB: 'West Indies', tournament: 'India vs West Indies T20 Series · Match 5',
+        format: 'T20', matchDate: '2026-11-09T12:00:00Z', localTime: '7:00 PM', timeZone: 'IST',
+        venue: 'Wankhede Stadium', city: 'Mumbai', country: 'India',
+        minTicketPrice: 900, maxTicketPrice: 6500, availableTickets: 8760,
+    },
+];
+async function main() {
+    for (const fixture of fixtures) {
+        const { id, matchDate, ...data } = fixture;
+        const matchData = {
+            ...data,
+            stadiumName: data.venue,
+            matchDate: new Date(`${matchDate.slice(0, 10)}T12:00:00.000Z`),
+        };
+        await prisma.match.upsert({
+            where: { id },
+            update: matchData,
+            create: { id, ...matchData },
+        });
+    }
+    console.log(`Seeded ${fixtures.length} sample cricket fixtures.`);
+}
+main()
+    .catch((error) => {
+    console.error('Failed to seed the database:', error);
+    process.exitCode = 1;
+})
+    .finally(async () => {
+    await prisma.$disconnect();
+});

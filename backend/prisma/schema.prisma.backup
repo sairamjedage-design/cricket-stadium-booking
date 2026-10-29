@@ -1,0 +1,103 @@
+// Prisma Schema for Cricket Stadium Booking System
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phone        String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  bookings     Booking[]
+}
+
+// Stadium model
+model Stadium {
+  id        Int      @id @default(autoincrement())
+  name      String
+  location  String
+  capacity  Int
+  createdAt DateTime @default(now())
+  sections  Section[]
+  matches   Match[]
+}
+
+// Section model
+model Section {
+  id          Int      @id @default(autoincrement())
+  stadiumId   Int
+  stadium     Stadium  @relation(fields: [stadiumId], references: [id])
+  name        String
+  tier        String
+  category    String   // General, Premium, VIP, Corporate
+  price       Int      // Price in currency units (e.g., INR)
+  rows        Int
+  seatsPerRow Int
+  createdAt   DateTime @default(now())
+  seats       Seat[]
+}
+
+// Seat model
+model Seat {
+  id            Int      @id @default(autoincrement())
+  sectionId     Int
+  section       Section  @relation(fields: [sectionId], references: [id])
+  rowNumber     Int
+  seatNumber    Int
+  seatLabel     String   // e.g., "F18"
+  status        String   @default("AVAILABLE") // AVAILABLE, SELECTED, BOOKED, BLOCKED
+  positionX     Float
+  positionY     Float
+  positionZ     Float
+  createdAt     DateTime @default(now())
+  @@unique([sectionId, rowNumber, seatNumber])
+}
+
+// Match model
+model Match {
+  id            Int      @id @default(autoincrement())
+  teamA         String
+  teamB         String
+  matchDate     DateTime
+  matchTime     String
+  stadiumId     Int
+  stadium       Stadium  @relation(fields: [stadiumId], references: [id])
+  status        String   @default("UPCOMING") // UPCOMING, LIVE, COMPLETED, CANCELLED
+  createdAt     DateTime @default(now())
+  bookings      Booking[]
+}
+
+// Booking model
+model Booking {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  user             User     @relation(fields: [userId], references: [id])
+  matchId          Int
+  match            Match    @relation(fields: [matchId], references: [id])
+  bookingReference String   @unique
+  totalAmount      Int
+  status           String   @default("CONFIRMED") // CONFIRMED, PENDING, CANCELLED
+  createdAt        DateTime @default(now())
+  bookingSeats     BookingSeat[]
+}
+
+// BookingSeat model (junction table for booking-seats relationship with price)
+model BookingSeat {
+  id        Int      @id @default(autoincrement())
+  bookingId Int
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  seatId    Int
+  seat      Seat     @relation(fields: [seatId], references: [id])
+  price     Int      // Price at time of booking
+  createdAt DateTime @default(now())
+
+  @@unique([bookingId, seatId])
+}
